@@ -1,0 +1,60 @@
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #ffffff; /* White background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow */
+  }
+  
+  .header-title {
+    font-size: 24px;
+    color: #696A22; /* Changed to match icon color for contrast */
+    margin: 0; /* Ensure no margin around the title */
+  }
+  
+  .icon-container {
+    display: flex; /* Align icons in a row */
+    align-items: center; /* Center icons vertically */
+    gap: 15px; /* Add gap between icons for better spacing */
+  }
+  
+  .cart-icon {
+    position: relative; /* Make it relative to position the badge */
+    cursor: pointer;
+  }
+  
+  .notification-badge {
+    background-color: #444528; /* Red badge color */
+    color: white; /* Badge text color */
+    border-radius: 50%; /* Make it circular */
+    padding: 5px 8px; /* Padding for the badge */
+    position: absolute; /* Positioning the badge */
+    top: -5px; /* Adjust position */
+    right: -10px; /* Adjust position */
+    font-size: 12px; /* Font size for the badge */
+  }
+  
+  .badge {
+    background-color:  #444528; /* Example color for cart count badge */
+    color: white; /* Badge text color */
+    border-radius: 50%; /* Make it circular */
+    padding: 5px 8px; /* Padding for the badge */
+    position: absolute; /* Positioning the badge */
+    top: -5px; /* Adjust position */
+    right: -10px; /* Adjust position */
+    font-size: 12px; /* Font size for the badge */
+  }
+  
+  .icon {
+    font-size: 20px;
+    color: #696A22; /* Change icon color for contrast */
+    cursor: pointer;
+    transition: color 0.3s; /* Smooth transition for hover effect */
+  }
+  
+  .icon:hover {
+    color: #A4C8A0; /* Change hover color for visibility */
+  }
+  

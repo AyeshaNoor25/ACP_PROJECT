@@ -1,0 +1,47 @@
+.image-item {
+    text-align: center; /* Center buttons below the image */
+    margin: 20px; /* Space around each image item */
+    border: 2px solid #728c69;
+    border-radius: 10px;
+}
+
+.image-item img {
+    width: 300px; /* Set a fixed width */
+    height: 300px; /* Set a fixed height */
+    object-fit: cover; /* Maintain aspect ratio, cover the area */
+    display: block; /* Ensure image is treated as a block element */
+}
+
+button {
+    margin: 5px; /* Space between buttons */
+    padding: 7px 7px; /* Padding for buttons */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    background-color:  #556b2f;
+    color: white; /* Text color */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transition */
+    font-size: 16px; /* Increase font size for better readability */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+button:hover {
+    background-color: #728c69;
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+button:focus {
+    outline: none; /* Remove outline on focus */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5); /* Highlight with a green shadow on focus */
+}
+
+/* Optional: Add an icon next to the button text */
+button .icon {
+    margin-right: 5px; /* Space between icon and text */
+    vertical-align: middle; /* Center icon vertically */
+}
+
+h3 {
+    color: #556b2f;
+    background-color:floralwhite;
+}

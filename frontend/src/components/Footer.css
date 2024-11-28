@@ -1,0 +1,39 @@
+.footer-container {
+  background-color: #f8f8f8; /* Adjust this as needed */
+  padding: 20px;
+  text-align: center;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.footer-links li {
+  position: relative;
+}
+
+.footer-links a {
+  color: #4b4b4b; /* Main text color */
+  text-decoration: none;
+  font-weight: bold;
+  padding: 5px 10px; /* Add padding for better click area */
+}
+
+.footer-links a:hover {
+  color: #7b8c4e; /* Olive accent color on hover */
+}
+
+.footer-links a.active {
+  border-bottom: 2px solid #556b2f; /* Dark olive green underline */
+}
+
+.footer-detail {
+  color: #4b4b4b; /* Main detail text color */
+  margin-top: 8px;
+  text-align: left; /* Align text left for better readability */
+  padding: 0 10px; /* Add some padding */
+}
