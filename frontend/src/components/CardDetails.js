@@ -6,9 +6,13 @@ const CardDetails = () => {
   const [cardNumber, setCardNumber] = useState('');
   const [cvv, setCvv] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
 
   const handleConfirmPayment = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setMessage('');
 
     const cardData = { cardHolder, cardNumber, cvv, expiryDate };
 
@@ -19,18 +23,22 @@ const CardDetails = () => {
         body: JSON.stringify(cardData),
       });
 
+      const responseData = await response.json();
+
       if (response.ok) {
-        alert('Payment Confirmed and Card Details Saved!');
+        setMessage('Payment Confirmed and Card Details Saved!');
         setCardHolder('');
         setCardNumber('');
         setCvv('');
         setExpiryDate('');
       } else {
-        alert('Failed to save card details.');
+        setMessage(responseData.message || 'Failed to save card details.');
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while saving card details.');
+      console.error('Error during API call:', error);
+      setMessage('An error occurred while saving card details. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -40,6 +48,7 @@ const CardDetails = () => {
       <div className="card-details-container">
         <div className="card-details">
           <h4>Credit/Debit Card Payment</h4>
+          {message && <p className="feedback-message">{message}</p>}
           <form onSubmit={handleConfirmPayment}>
             <div className="form-group">
               <label htmlFor="cardHolder">Card Holder Name:</label>
@@ -52,7 +61,6 @@ const CardDetails = () => {
                 required
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="cardNumber">Card Number:</label>
               <input
@@ -65,7 +73,6 @@ const CardDetails = () => {
                 required
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="cvv">CVV:</label>
               <input
@@ -78,7 +85,6 @@ const CardDetails = () => {
                 required
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="expiryDate">Expiry Date:</label>
               <input
@@ -91,9 +97,12 @@ const CardDetails = () => {
                 required
               />
             </div>
-
-            <button type="submit" className="confirm-btn">
-              Confirm Payment
+            <button
+              type="submit"
+              className="confirm-btn"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Processing...' : 'Confirm Payment'}
             </button>
           </form>
         </div>
