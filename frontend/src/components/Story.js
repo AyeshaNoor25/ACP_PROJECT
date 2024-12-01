@@ -51,6 +51,7 @@ function Story({ heading, books = [], notificationCount = 0, cartItems = [], use
     }
   };
   
+  
   return (
     <div>
       <Header cartCount={cartItems.length} notificationCount={notificationCount} />

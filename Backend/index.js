@@ -15,12 +15,7 @@ const CardDetails = require('./models/CardDetails');
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose
-  .connect("mongodb://127.0.0.1:27017/nameapp", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    })
+mongoose.connect('mongodb://localhost:27017/Nameapp', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.log("Error connecting to MongoDB:", error));
 
@@ -89,6 +84,7 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/cart/add', async (req, res) => {
   const { userId, item } = req.body;
 
+  // Validate userId and item
   if (!userId) {
     return res.status(400).json({ message: 'userId is required.' });
   }
@@ -97,22 +93,20 @@ app.post('/api/cart/add', async (req, res) => {
   }
 
   try {
-    // Convert userId to ObjectId
-    const objectIdUserId = mongoose.Types.ObjectId(userId);
-
-    // Validate user exists
-    const userExists = await User.findById(objectIdUserId);
+    // Convert userId to ObjectId and validate that the user exists
+    const objectIdUserId = mongoose.Types.ObjectId(userId); // Convert to ObjectId
+    const userExists = await User.findById(objectIdUserId);  // Check if user exists
     if (!userExists) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    // Find or create cart
+    // Find or create the cart for the user
     let cart = await Cart.findOne({ user: objectIdUserId });
     if (!cart) {
       cart = new Cart({ user: objectIdUserId, items: [] });
     }
 
-    // Update cart items
+    // Add the item to the cart or update the quantity if it already exists
     const existingItemIndex = cart.items.findIndex((cartItem) => cartItem.bookId.toString() === item.bookId);
     if (existingItemIndex > -1) {
       cart.items[existingItemIndex].quantity += item.quantity || 1;
@@ -120,7 +114,7 @@ app.post('/api/cart/add', async (req, res) => {
       cart.items.push(item);
     }
 
-    // Save cart
+    // Save the updated cart
     await cart.save();
     res.status(200).json({ message: 'Item added to cart', cart });
   } catch (error) {
@@ -128,6 +122,7 @@ app.post('/api/cart/add', async (req, res) => {
     res.status(500).json({ message: 'Error adding to cart', error });
   }
 });
+
 
 // Get Cart Items Endpoint
 app.get('/api/cart/:userId', async (req, res) => {

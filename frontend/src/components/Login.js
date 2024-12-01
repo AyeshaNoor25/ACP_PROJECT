@@ -19,7 +19,7 @@ const Login = ({ toggleAuth }) => {
 
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('userId', data.userId); // Add this line
+        localStorage.setItem('userId', data.userId);
         alert('Login successful');
         navigate('/home');
       }
