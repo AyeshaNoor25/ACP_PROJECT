@@ -1,18 +1,36 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from './Header1';
+import './CardDetails.css';
 
 const CardDetails = () => {
   const [cardHolder, setCardHolder] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [cvv, setCvv] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
+  const [expiryError, setExpiryError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
+  
+  const navigate = useNavigate();
+
+  const validateExpiryDate = (date) => {
+    const regex = /^(0[1-9]|1[0-2])\/\d{2}$/; // MM/YY format
+    return regex.test(date);
+  };
 
   const handleConfirmPayment = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage('');
+
+    if (!validateExpiryDate(expiryDate)) {
+      setExpiryError('Invalid expiry date format. Please use MM/YY.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    setExpiryError('');
 
     const cardData = { cardHolder, cardNumber, cvv, expiryDate };
 
@@ -26,7 +44,10 @@ const CardDetails = () => {
       const responseData = await response.json();
 
       if (response.ok) {
-        setMessage('Payment Confirmed and Card Details Saved!');
+        setMessage('Payment successful! You\'ll be notified in a few minutes.');
+        setTimeout(() => {
+          navigate('/home');
+        }, 3000);
         setCardHolder('');
         setCardNumber('');
         setCvv('');
@@ -48,7 +69,15 @@ const CardDetails = () => {
       <div className="card-details-container">
         <div className="card-details">
           <h4>Credit/Debit Card Payment</h4>
-          {message && <p className="feedback-message">{message}</p>}
+          {message && (
+            <p
+              className={`feedback-message ${
+                message.includes('successful') ? 'success' : 'error'
+              }`}
+            >
+              {message}
+            </p>
+          )}
           <form onSubmit={handleConfirmPayment}>
             <div className="form-group">
               <label htmlFor="cardHolder">Card Holder Name:</label>
@@ -56,7 +85,7 @@ const CardDetails = () => {
                 type="text"
                 id="cardHolder"
                 value={cardHolder}
-                onChange={(e) => setCardHolder(e.target.value)}
+                onChange={(e) => setCardHolder(e.target.value.toUpperCase())}
                 placeholder="FATIMA MALIK"
                 required
               />
@@ -96,6 +125,7 @@ const CardDetails = () => {
                 maxLength="5"
                 required
               />
+              {expiryError && <p className="error-text">{expiryError}</p>}
             </div>
             <button
               type="submit"
