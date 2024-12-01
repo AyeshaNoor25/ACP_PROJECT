@@ -4,12 +4,13 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
-const Cart = require('./models/cart');
 require('dotenv').config();
 
 const app = express();
 
 const CardDetails = require('./models/CardDetails');
+const Checkout = require('./models/checkOut');
+const Cart = require('./models/cart');
 
 // Middleware
 app.use(cors({ origin: 'http://localhost:3000' }));
@@ -86,46 +87,58 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-app.post('/api/cart/add', async (req, res) => {
-  const { userId, item } = req.body;
-
-  if (!userId) {
-    return res.status(400).json({ message: 'userId is required.' });
-  }
-  if (!item || !item.bookId) {
-    return res.status(400).json({ message: 'item.bookId is required.' });
-  }
-
+//Cart
+app.post('/add-to-cart', async (req, res) => {
   try {
-    // Convert userId to ObjectId
-    const objectIdUserId = mongoose.Types.ObjectId(userId);
+    const { bookId, quantity, price } = req.body; // Get book details from the request
 
-    // Validate user exists
-    const userExists = await User.findById(objectIdUserId);
-    if (!userExists) {
-      return res.status(404).json({ message: 'User not found.' });
+    // Validate and convert price to a number
+    let numericPrice = parseFloat(price.replace(/[^\d.-]/g, '')); // Remove non-numeric characters
+
+    if (isNaN(numericPrice)) {
+      return res.status(400).json({ message: "Invalid price value" }); // Handle invalid price input
     }
 
-    // Find or create cart
-    let cart = await Cart.findOne({ user: objectIdUserId });
-    if (!cart) {
-      cart = new Cart({ user: objectIdUserId, items: [] });
-    }
+    // Create the cart entry
+    const cartItem = new Cart({
+      bookId,
+      quantity,
+      price: numericPrice, // Save the numeric price
+    });
 
-    // Update cart items
-    const existingItemIndex = cart.items.findIndex((cartItem) => cartItem.bookId.toString() === item.bookId);
-    if (existingItemIndex > -1) {
-      cart.items[existingItemIndex].quantity += item.quantity || 1;
-    } else {
-      cart.items.push(item);
-    }
+    // Save the cart item to the database
+    await cartItem.save();
 
-    // Save cart
-    await cart.save();
-    res.status(200).json({ message: 'Item added to cart', cart });
+    res.status(200).json({ message: "Book added to cart successfully!" });
   } catch (error) {
-    console.error('Error adding to cart:', error);
-    res.status(500).json({ message: 'Error adding to cart', error });
+    console.error("Error adding book to cart:", error);
+    res.status(500).json({ message: "Error adding book to cart." });
+  }
+});
+
+
+// Checkout
+app.post('/api/checkout', async (req, res) => {
+  try {
+    const { description, bookDetails, bookPrice, deliveryCharges, totalAmount } = req.body;
+
+    if (!description || !bookDetails || !bookPrice || !deliveryCharges || !totalAmount) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    const newCheckout = new Checkout({
+      description,
+      bookDetails,
+      bookPrice,
+      deliveryCharges,
+      totalAmount,
+    });
+
+    await newCheckout.save();
+    res.status(201).json({ message: 'Checkout info saved successfully!' });
+  } catch (error) {
+    console.error('Error saving checkout info:', error);
+    res.status(500).json({ message: 'Error saving checkout info' });
   }
 });
 
