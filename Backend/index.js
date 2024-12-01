@@ -2,15 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
+const Cart = require('./models/cart');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });  // Adjust the path to your .env file
 
 const app = express();
 
 const CardDetails = require('./models/CardDetails');
 const Checkout = require('./models/checkOut');
-const Cart = require('./models/cart');
+
 
 // Middleware
 app.use(cors({ origin: 'http://localhost:3000' }));
@@ -82,49 +83,47 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-app.post('/api/cart/add', async (req, res) => {
-  const { userId, item } = req.body;
-
-  if (!userId) {
-    return res.status(400).json({ message: 'userId is required.' });
-  }
-  if (!item || !item.bookId) {
-    return res.status(400).json({ message: 'item.bookId is required.' });
-  }
-
+app.post('/api/cart', async (req, res, next) => {
   try {
-    // Convert userId to ObjectId
-    const objectIdUserId = mongoose.Types.ObjectId(userId);
+    const { book } = req.body;
 
-    // Validate user exists
-    const userExists = await User.findById(objectIdUserId);
-    if (!userExists) {
-      return res.status(404).json({ message: 'User not found.' });
+    if (!book || !book.name || !book.price || !book.image) {
+      return res.status(400).json({ message: 'Missing book details' });
     }
 
-    // Find or create cart
-    let cart = await Cart.findOne({ user: objectIdUserId });
+    // Assuming you have JWT token logic here
+    const token = req.headers.authorization?.split(' ')[1];  // Bearer token
+
+if (!token) {
+  return res.status(401).json({ message: 'No token provided' });
+}
+
+const secretKey = process.env.JWT_SECRET;
+if (!secretKey) {
+  console.error("JWT_SECRET is not defined");
+  return res.status(500).json({ message: 'JWT_SECRET is not defined in the environment' });
+}
+
+const decoded = jwt.verify(token, secretKey);
+
+    const userId = decoded.id;
+
+    let cart = await Cart.findOne({ userId });
+
     if (!cart) {
-      cart = new Cart({ user: objectIdUserId, items: [] });
-    }
-
-    // Update cart items
-    const existingItemIndex = cart.items.findIndex((cartItem) => cartItem.bookId.toString() === item.bookId);
-    if (existingItemIndex > -1) {
-      cart.items[existingItemIndex].quantity += item.quantity || 1;
+      cart = new Cart({ userId, books: [book] });
     } else {
-      cart.items.push(item);
+      cart.books.push(book);
     }
 
-    // Save cart
     await cart.save();
-    res.status(200).json({ message: 'Item added to cart', cart });
-  } catch (error) {
-    console.error("Error adding book to cart:", error);
-    res.status(500).json({ message: "Error adding book to cart." });
+    res.status(200).json(cart);
+
+  } catch (err) {
+    console.error('Error adding to cart:', err);
+    next(err);  // Pass the error to the next middleware for handling
   }
 });
-
 
 // Checkout
 app.post('/api/checkout', async (req, res) => {

@@ -1,21 +1,18 @@
-const mongoose = require('mongoose');  // Make sure this is present
+const mongoose = require('mongoose');
 
+// Define the cart schema
 const cartSchema = new mongoose.Schema({
-  bookId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Book',  // Assuming there is a 'Book' model
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 1,  // Ensure the quantity is at least 1
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
+  userId: { type: String, required: true }, // You might want to associate the cart with a user
+  books: [
+    {
+      name: { type: String, required: true },
+      price: { type: String, required: true },
+      image: { type: String, required: true }
+    }
+  ]
 });
 
-const Cart = mongoose.model('Cart', cartSchema);  // Model for the Cart collection
+// Create the model
+const Cart = mongoose.model('Cart', cartSchema);
+
 module.exports = Cart;

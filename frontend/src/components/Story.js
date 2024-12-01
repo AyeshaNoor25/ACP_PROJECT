@@ -8,35 +8,42 @@ import Header from './Header';
 function Story({ heading, books = [], addToCart, notificationCount = 0, cartItems = [] }) {
   const navigate = useNavigate();
 
-  const handleAddToCart = async (book) => {
-    try {
-      const response = await fetch('http://localhost:5000/api/cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(book),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        alert(data.message || 'Book added to cart successfully!');
-      } else {
-        const error = await response.json();
-        console.error('Error response:', error);
-        alert(error.message || 'Failed to add book to cart.');
-      }
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      alert('An error occurred while adding to cart.');
+  const handleBuyNow = (book) => {
+    navigate('/checkout', { state: { selectedItems: [book] } });
+  };
+  const handleAddToCart = (book) => {
+    if (!book.name || !book.price || !book.image) {
+      console.error("Invalid book details:", book);
+      return;
     }
+  
+    addToCart(book);  // Update the cart in state
+  
+    // Send the book data to the backend API
+    fetch('http://localhost:5000/api/cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Send the token
+      },
+      body: JSON.stringify({ book })
+    })
+    
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to add book: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Book added to cart:', data);
+      })
+      .catch((error) => {
+        console.error('Error adding to cart:', error);
+      });
   };
   
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> add50c2dde13e34e6deb34ce0fa4c557279870c2
   return (
     <div>
       <Header cartCount={cartItems.length} notificationCount={notificationCount} />
@@ -52,10 +59,8 @@ function Story({ heading, books = [], addToCart, notificationCount = 0, cartItem
               <img src={book.image} alt={book.name} />
               <h3>{book.name}</h3>
               <h3>{book.price}</h3>
-              <button onClick={() => handleAddToCart({ name: book.name, image: book.image, price: book.price })}>
-                Add to Cart
-              </button>
-              <button onClick={() => navigate('/checkout', { state: { selectedItems: [book] } })}>Buy Now</button>
+              <button onClick={() => handleAddToCart(book)}>Add to Cart</button>
+              <button onClick={() => handleBuyNow(book)}>Buy Now</button>
             </div>
           ))}
         </div>
