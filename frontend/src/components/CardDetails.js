@@ -10,8 +10,7 @@ const CardDetails = () => {
   const [expiryDate, setExpiryDate] = useState('');
   const [expiryError, setExpiryError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState('');
-  
+
   const navigate = useNavigate();
 
   const validateExpiryDate = (date) => {
@@ -22,7 +21,6 @@ const CardDetails = () => {
   const handleConfirmPayment = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage('');
 
     if (!validateExpiryDate(expiryDate)) {
       setExpiryError('Invalid expiry date format. Please use MM/YY.');
@@ -44,20 +42,18 @@ const CardDetails = () => {
       const responseData = await response.json();
 
       if (response.ok) {
-        setMessage('Payment successful! You\'ll be notified in a few minutes.');
-        setTimeout(() => {
-          navigate('/home');
-        }, 3000);
+        alert("Payment successful! You'll be notified in a few minutes.");
+        navigate('/home');
         setCardHolder('');
         setCardNumber('');
         setCvv('');
         setExpiryDate('');
       } else {
-        setMessage(responseData.message || 'Failed to save card details.');
+        alert(responseData.message || 'Failed to save card details.');
       }
     } catch (error) {
       console.error('Error during API call:', error);
-      setMessage('An error occurred while saving card details. Please try again.');
+      alert('An error occurred while saving card details. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -69,15 +65,6 @@ const CardDetails = () => {
       <div className="card-details-container">
         <div className="card-details">
           <h4>Credit/Debit Card Payment</h4>
-          {message && (
-            <p
-              className={`feedback-message ${
-                message.includes('successful') ? 'success' : 'error'
-              }`}
-            >
-              {message}
-            </p>
-          )}
           <form onSubmit={handleConfirmPayment}>
             <div className="form-group">
               <label htmlFor="cardHolder">Card Holder Name:</label>

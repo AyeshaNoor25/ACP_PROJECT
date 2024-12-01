@@ -38,7 +38,7 @@ html, body {
 
 
 .container {
-  background-image: url('C:\Users\MnM\OneDrive\Documents\ACP\FRONTEND_BACKEND\frontend\src\assets\bgImage2.jpg');
+  background-image: url('C:\Users\User 2023\Desktop\ACP\ACP_PROJECT\frontend\src\assets\bgImage2.jpg');
   display: flex;
   height: 90vh;
   width: 100vw;
@@ -61,7 +61,7 @@ html, body {
   z-index: -2;
 }
 .form-container{
-  background-image: url('C:\Users\MnM\OneDrive\Documents\ACP\FRONTEND_BACKEND\frontend\src\assets\bgImage2.jpg');
+  background-image: url('C:\Users\User 2023\Desktop\ACP\ACP_PROJECT\frontend\src\assets\bgImage2.jpg');
   display: flex;
   justify-content: center;
   align-items: center;
@@ -163,7 +163,7 @@ html, body {
   max-width: 100px;
 }
 .card-details-container, .cash-on-delivery-container{
-  background-image: url('C:\Users\MnM\OneDrive\Documents\ACP\FRONTEND_BACKEND\frontend\src\assets\bgImage2.jpg');
+  background-image: url('C:\Users\User 2023\Desktop\ACP\ACP_PROJECT\frontend\src\assets\bgImage2.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover; 
@@ -233,7 +233,7 @@ input {
 
 /* Cart Page Styles */
 .cart-container {
-  background-image: url('C:\Users\MnM\OneDrive\Documents\ACP\FRONTEND_BACKEND\frontend\src\assets\bgImage2.jpg');
+  background-image: url('C:\Users\User 2023\Desktop\ACP\ACP_PROJECT\frontend\src\assets\bgImage2.jpg');
   display: flex;
   justify-content: center;
   align-items: center;
@@ -335,7 +335,7 @@ input {
 }
 /* PayPage Styles */
 .payment-page {
-  background-image: url('C:\Users\MnM\OneDrive\Documents\ACP\FRONTEND_BACKEND\frontend\src\assets\bgImage2.jpg');
+  background-image: url('C:\Users\User 2023\Desktop\ACP\ACP_PROJECT\frontend\src\assets\bgImage2.jpg');
   display: flex;
   justify-content: center;
   align-items: center;

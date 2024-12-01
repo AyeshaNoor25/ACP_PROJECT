@@ -75,7 +75,7 @@
     padding: 10px;
     font-size: 1rem;
     color: white;
-    background-color: #4CAF50;
+    background-color: #556b2f;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -83,7 +83,7 @@
   }
   
   .confirm-btn:hover:enabled {
-    background-color: #45a049;
+    background-color: #556b2f;
   }
   
   .confirm-btn:disabled {
