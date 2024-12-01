@@ -4,12 +4,13 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
-const Cart = require('./models/cart');
 require('dotenv').config();
 
 const app = express();
 
 const CardDetails = require('./models/CardDetails');
+const Checkout = require('./models/checkOut');
+const Cart = require('./models/cart');
 
 // Middleware
 app.use(cors({ origin: 'http://localhost:3000' }));
@@ -84,7 +85,6 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/cart/add', async (req, res) => {
   const { userId, item } = req.body;
 
-  // Validate userId and item
   if (!userId) {
     return res.status(400).json({ message: 'userId is required.' });
   }
@@ -93,20 +93,22 @@ app.post('/api/cart/add', async (req, res) => {
   }
 
   try {
-    // Convert userId to ObjectId and validate that the user exists
-    const objectIdUserId = mongoose.Types.ObjectId(userId); // Convert to ObjectId
-    const userExists = await User.findById(objectIdUserId);  // Check if user exists
+    // Convert userId to ObjectId
+    const objectIdUserId = mongoose.Types.ObjectId(userId);
+
+    // Validate user exists
+    const userExists = await User.findById(objectIdUserId);
     if (!userExists) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    // Find or create the cart for the user
+    // Find or create cart
     let cart = await Cart.findOne({ user: objectIdUserId });
     if (!cart) {
       cart = new Cart({ user: objectIdUserId, items: [] });
     }
 
-    // Add the item to the cart or update the quantity if it already exists
+    // Update cart items
     const existingItemIndex = cart.items.findIndex((cartItem) => cartItem.bookId.toString() === item.bookId);
     if (existingItemIndex > -1) {
       cart.items[existingItemIndex].quantity += item.quantity || 1;
@@ -114,52 +116,65 @@ app.post('/api/cart/add', async (req, res) => {
       cart.items.push(item);
     }
 
-    // Save the updated cart
+    // Save cart
     await cart.save();
     res.status(200).json({ message: 'Item added to cart', cart });
   } catch (error) {
-    console.error('Error adding to cart:', error);
-    res.status(500).json({ message: 'Error adding to cart', error });
+    console.error("Error adding book to cart:", error);
+    res.status(500).json({ message: "Error adding book to cart." });
   }
 });
 
 
-// Get Cart Items Endpoint
-app.get('/api/cart/:userId', async (req, res) => {
-  const { userId } = req.params;
-
+// Checkout
+app.post('/api/checkout', async (req, res) => {
   try {
-    const cart = await Cart.findOne({ user: userId }).populate('user');
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
+    const { description, bookDetails, bookPrice, deliveryCharges, totalAmount } = req.body;
+
+    if (!description || !bookDetails || !bookPrice || !deliveryCharges || !totalAmount) {
+      return res.status(400).json({ message: 'All fields are required' });
     }
 
-    res.status(200).json({ cart });
+    const newCheckout = new Checkout({
+      description,
+      bookDetails,
+      bookPrice,
+      deliveryCharges,
+      totalAmount,
+    });
+
+    await newCheckout.save();
+    res.status(201).json({ message: 'Checkout info saved successfully!' });
   } catch (error) {
-    console.error('Error retrieving cart:', error);
-    res.status(500).json({ message: 'Error retrieving cart', error });
+    console.error('Error saving checkout info:', error);
+    res.status(500).json({ message: 'Error saving checkout info' });
   }
 });
-app.delete('/api/cart/remove', async (req, res) => {
-  const { userId, itemName } = req.body;
+
+//Card Details
+app.post('/api/card-details', async (req, res) => {
+  const { cardHolder, cardNumber, cvv, expiryDate } = req.body;
 
   try {
-    const cart = await Cart.findOne({ user: userId });
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
+    if (!cardHolder || !cardNumber || !cvv || !expiryDate) {
+      return res.status(400).json({ message: 'All fields are required.' });
     }
 
-    cart.items = cart.items.filter((item) => item.name !== itemName);
-    await cart.save();
+    const newCardDetails = new CardDetails({
+      cardHolder,
+      cardNumber,
+      cvv,
+      expiryDate,
+    });
 
-    res.status(200).json({ message: 'Item removed from cart', cart });
+    await newCardDetails.save();
+    res.status(201).json({ message: 'Card details saved successfully.' });
   } catch (error) {
-    console.error('Error removing item from cart:', error);
-    res.status(500).json({ message: 'Error removing item from cart', error });
+    console.error('Error saving card details:', error);
+    res.status(500).json({ message: 'Failed to save card details.' });
   }
 });
 
-//Card DEta
 
 // Start the server
 const PORT = process.env.PORT || 5000;

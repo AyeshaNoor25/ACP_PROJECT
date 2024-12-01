@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import Axios for HTTP requests
 import Header from './Header1';
 
 const CheckoutForm = () => {
@@ -11,6 +10,8 @@ const CheckoutForm = () => {
   const [bookPrice, setBookPrice] = useState(0); // Initialize to 0
   const deliveryCharges = 250;
   const navigate = useNavigate();
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Calculate bookPrice and totalAmount when selectedItems change
   useEffect(() => {
@@ -21,32 +22,42 @@ const CheckoutForm = () => {
   const totalAmount = bookPrice + deliveryCharges;
 
   const handleConfirm = async () => {
-    // Prepare data to send to the backend
     const checkoutData = {
-      address: description,
+      description,
       bookDetails,
       bookPrice,
       deliveryCharges,
       totalAmount,
     };
-
+  
     try {
-      // Send the checkout data to the backend
-      const response = await axios.post('http://localhost:5000/api/checkout', checkoutData);
-      alert(response.data.message); // Display success message
-      navigate('/pay', { state: { subtotal: bookPrice, deliveryCharges } }); // Navigate to payment page
+      const response = await fetch('http://localhost:5000/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(checkoutData),
+      });
+  
+      const responseData = await response.json();
+  
+      if (response.ok) {
+        alert('Checkout details saved successfully!');
+        navigate('/pay', { state: { subtotal: bookPrice, deliveryCharges } });
+      } else {
+        alert(responseData.message || 'Failed to save checkout details.');
+      }
     } catch (error) {
-      console.error('Error posting data:', error);
-      alert('Failed to confirm details. Please try again.');
+      console.error('Error during API call:', error);
+      alert('An error occurred while saving checkout details.');
     }
   };
-
+  
   return (
     <div>
       <Header />
       <div className="form-container">
         <div className="form-wrapper">
           <h1>Check Out</h1>
+          {message && <p className="feedback-message">{message}</p>}
           <div className="input-group">
             <label>Address:</label>
             <input
@@ -81,7 +92,9 @@ const CheckoutForm = () => {
             <label>Total:</label>
             <input type="text" value={`Rs. ${totalAmount}`} readOnly />
           </div>
-          <button onClick={handleConfirm}>Confirm</button>
+          <button onClick={handleConfirm} disabled={isSubmitting}>
+            {isSubmitting ? 'Processing...' : 'Confirm'}
+          </button>
         </div>
       </div>
     </div>
