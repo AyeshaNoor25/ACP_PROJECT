@@ -73,11 +73,10 @@ const CartPage = () => {
   return (
     <div>
       <Header />
-      <div className="container">
+      <div className="cart-container">
         <div className="cart-page">
-          <div className="cart-header">
-            <h1>Your Cart</h1>
-          </div>
+    
+            <h1 className="cart-header ">Your Cart </h1>
           {cartItems.length === 0 ? (
             <p className="empty-cart">Your cart is empty.</p>
           ) : (

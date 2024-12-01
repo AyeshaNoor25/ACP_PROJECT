@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import logo from '../assets/logo.jpg';
 const Login = ({ toggleAuth }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -34,6 +34,9 @@ const Login = ({ toggleAuth }) => {
 
   return (
     <div className="form-wrapper">
+      <img src={logo} alt="Book Store Logo" className="logo" />
+      <h1>Login</h1>
+      <div className="input-group">
       <input
         type="email"
         placeholder="Email"
@@ -46,6 +49,7 @@ const Login = ({ toggleAuth }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
+      </div>
       <button onClick={handleLogin}>Sign in</button>
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <p>

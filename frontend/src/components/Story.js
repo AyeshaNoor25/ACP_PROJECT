@@ -3,9 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import './Story.css';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import Header from './Header';
 
 function Story({ heading, books = [], addToCart, notificationCount = 0, cartItems = [] }) {
+  const [cartCount, setCartCount] = useState(0); // Local state for cart count
+
   const navigate = useNavigate();
 
   const handleBuyNow = (book) => {
@@ -18,7 +21,7 @@ function Story({ heading, books = [], addToCart, notificationCount = 0, cartItem
     }
   
     addToCart(book);  // Update the cart in state
-  
+    setCartCount((prevCount) => prevCount + 1);
     // Send the book data to the backend API
     fetch('http://localhost:5000/api/cart', {
       method: 'POST',
@@ -46,7 +49,7 @@ function Story({ heading, books = [], addToCart, notificationCount = 0, cartItem
 
   return (
     <div>
-      <Header cartCount={cartItems.length} notificationCount={notificationCount} />
+      <Header cartCount={cartCount} notificationCount={notificationCount} />
       <div className="section-container">
         <div className="search-bar-container">
           <input type="text" placeholder="Book, Category, Author" className="search-bar" />

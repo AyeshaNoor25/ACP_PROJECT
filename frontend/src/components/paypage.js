@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.jpg';
 import Header from './Header1';
 const PayPage = () => {
   const location = useLocation();
@@ -19,6 +20,7 @@ const PayPage = () => {
       <Header/>
       <div className='payment-page'>
     <div className="payment-methods">
+    <img src={logo} alt="Book Store Logo" className="logo" />
       <h1 className="cad-heading-color">Select Payment Method</h1>
       <div className="payment-container">
         <button className="payment-button" onClick={() => handlePayment('card-details')}>

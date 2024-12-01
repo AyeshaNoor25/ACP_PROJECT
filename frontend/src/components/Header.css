@@ -10,7 +10,7 @@
   
   .header-title {
     font-size: 24px;
-    color: #696A22; /* Changed to match icon color for contrast */
+    color: #556b2f; /* Changed to match icon color for contrast */
     margin: 0; /* Ensure no margin around the title */
   }
   
@@ -37,7 +37,7 @@
   }
   
   .badge {
-    background-color:  #444528; /* Example color for cart count badge */
+    background-color:  #c0210c; /* Example color for cart count badge */
     color: white; /* Badge text color */
     border-radius: 50%; /* Make it circular */
     padding: 5px 8px; /* Padding for the badge */
@@ -47,14 +47,15 @@
     font-size: 12px; /* Font size for the badge */
   }
   
+  
   .icon {
     font-size: 20px;
-    color: #696A22; /* Change icon color for contrast */
+    color: #556b2f; /* Change icon color for contrast */
     cursor: pointer;
     transition: color 0.3s; /* Smooth transition for hover effect */
   }
   
   .icon:hover {
-    color: #A4C8A0; /* Change hover color for visibility */
+    color:#556b2f; /* Change hover color for visibility */
   }
   

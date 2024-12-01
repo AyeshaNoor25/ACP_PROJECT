@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import logo from '../assets/logo.jpg';
 const Signup = ({ toggleAuth }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -22,6 +22,9 @@ const Signup = ({ toggleAuth }) => {
 
   return (
     <div className="form-wrapper">
+       <img src={logo} alt="Book Store Logo" className="logo" />
+       <h1>Signup</h1>
+       <div className="input-group">
       <input
         type="text"
         placeholder="Username"
@@ -40,6 +43,7 @@ const Signup = ({ toggleAuth }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
+      </div>
       <button onClick={handleSignup}>Sign up</button>
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <p>
@@ -47,6 +51,7 @@ const Signup = ({ toggleAuth }) => {
         <b onClick={toggleAuth} className="pointer">Sign in here</b>
       </p>
     </div>
+
   );
 };
 

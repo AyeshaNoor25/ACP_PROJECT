@@ -1,16 +1,19 @@
 .image-item {
     text-align: center; /* Center buttons below the image */
     margin: 20px; /* Space around each image item */
-    border: 2px solid #728c69;
+    /* border: 2px solid #728c69; */
     border-radius: 10px;
 }
 
 .image-item img {
     width: 300px; /* Set a fixed width */
     height: 300px; /* Set a fixed height */
-    object-fit: cover; /* Maintain aspect ratio, cover the area */
-    display: block; /* Ensure image is treated as a block element */
+    object-fit: cover; /* Maintain aspect ratio and fill the container */
+    border-radius: 8px; /* Optional: rounded corners */
+    display: block; /* Ensure the image behaves as a block-level element */
+    margin: 0 auto; /* Center the image horizontally */
 }
+
 
 button {
     margin: 5px; /* Space between buttons */
@@ -43,5 +46,5 @@ button .icon {
 
 h3 {
     color: #556b2f;
-    background-color:floralwhite;
+    /* background-color:white; */
 }

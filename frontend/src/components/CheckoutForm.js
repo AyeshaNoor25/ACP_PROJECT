@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from './Header1';
-
+import logo from '../assets/logo.jpg';
 const CheckoutForm = () => {
   const location = useLocation();
   const { selectedItems } = location.state || { selectedItems: [] };
@@ -56,6 +56,7 @@ const CheckoutForm = () => {
       <Header />
       <div className="form-container">
         <div className="form-wrapper">
+        <img src={logo} alt="Book Store Logo" className="logo" />
           <h1>Check Out</h1>
           {message && <p className="feedback-message">{message}</p>}
           <div className="input-group">

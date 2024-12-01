@@ -2,16 +2,22 @@ import React, { useState} from 'react';
 import { useLocation } from 'react-router-dom';
 import logo from '../assets/logo.jpg';
 import Header from './Header1';
+import { useNavigate } from 'react-router-dom';
 const CashOnDelivery = ({removeFromCart}) => {
   const location = useLocation();
   const { subtotal, deliveryCharges } = location.state || { subtotal: 0, deliveryCharges: 250 };
   const [totalPayment, setTotalPayment] = useState(subtotal + deliveryCharges);
-
+const navigate = useNavigate();
   const handleOrder = () => {
-    alert(Order Confirmed! Total Payment: PKR ${totalPayment});
-    // Add logic to remove add-to-cart notification if necessary
+    // Show the thank you message
+    alert(`Thank you for your order! You will receive it in 5-7 working days. Total Payment: PKR ${totalPayment}`);
+    
+    // Call removeFromCart to clear the cart (if needed)
     removeFromCart();
-  };
+
+    // Navigate back to the homepage
+    navigate('/home');
+  };
 
   return (
     <div>

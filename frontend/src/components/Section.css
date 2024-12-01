@@ -16,7 +16,7 @@
   width: 100%; /* Responsive width */
   max-width: 800px; 
   padding: 10px 40px;
-  border: 1px solid #ccc;
+  border: 2px solid #556b2f;
   border-radius: 5px;
   font-size: 16px;
 }
@@ -24,7 +24,7 @@
 .search-icon {
   position: absolute;
   left: 15px;
-  top: 50%;
+  top: 42%;
   transform: translateY(-50%);
   color: #aaa;
   font-size: 18px;
@@ -34,10 +34,12 @@ h2 {
   font-size: 28px;
   margin: 30px 0 15px;
   color: white; 
-  font-weight: bold;
-  border: 2px solid #5a7330; 
+  font-weight:bolder;
+  border: 2px solid #556b2f; 
   background-color: #556b2f;
-  font-family: 'Arial', 'Helvetica', sans-serif; /* Fallbacks */
+  font-family: 'TimesNewRoman', 'Helvetica', sans-serif; /* Fallbacks */
+  padding: 5px;
+  border-radius: 5px;
 }
 
 .image-scroll {
