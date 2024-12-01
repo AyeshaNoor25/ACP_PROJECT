@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Login from './Login'; 
 import Signup from './Signup'; 
 import Header from './Header1';
+import '../App.css';
+
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
 

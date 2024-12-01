@@ -8,7 +8,7 @@ const CashOnDelivery = ({removeFromCart}) => {
   const [totalPayment, setTotalPayment] = useState(subtotal + deliveryCharges);
 
   const handleOrder = () => {
-    alert(`Order Confirmed! Total Payment: PKR ${totalPayment}`);
+    alert(Order Confirmed! Total Payment: PKR ${totalPayment});
     // Add logic to remove add-to-cart notification if necessary
     removeFromCart();
   };

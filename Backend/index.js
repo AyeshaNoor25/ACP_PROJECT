@@ -17,7 +17,7 @@ const Checkout = require('./models/checkOut');
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
-mongoose.connect('mongodb://localhost:27017/Nameapp', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://localhost:27017/nameapp', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.log("Error connecting to MongoDB:", error));
 
@@ -124,6 +124,73 @@ const decoded = jwt.verify(token, secretKey);
     next(err);  // Pass the error to the next middleware for handling
   }
 });
+
+//Fetch cart
+app.get('/api/cart', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+
+    const secretKey = process.env.JWT_SECRET;
+    if (!secretKey) {
+      return res.status(500).json({ message: 'JWT_SECRET is not defined' });
+    }
+
+    const decoded = jwt.verify(token, secretKey);
+    const userId = decoded.id;
+
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    res.status(200).json(cart.books);
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    res.status(500).json({ message: 'Error fetching cart' });
+  }
+});
+
+//cart items delete
+// Remove an item from the cart
+app.delete('/api/cart/:bookId', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+
+    const secretKey = process.env.JWT_SECRET;
+    if (!secretKey) {
+      return res.status(500).json({ message: 'JWT_SECRET is not defined' });
+    }
+
+    const decoded = jwt.verify(token, secretKey);
+    const userId = decoded.id;
+
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    // Find the book by its id in the cart
+    const bookId = req.params.bookId;
+
+    // Remove the book from the cart
+    const updatedBooks = cart.books.filter(book => book._id.toString() !== bookId);
+    cart.books = updatedBooks;
+
+    await cart.save();
+
+    res.status(200).json({ message: 'Item removed from cart', cart: cart.books });
+  } catch (error) {
+    console.error('Error removing item from cart:', error);
+    res.status(500).json({ message: 'Error removing item from cart' });
+  }
+});
+
 
 // Checkout
 app.post('/api/checkout', async (req, res) => {
